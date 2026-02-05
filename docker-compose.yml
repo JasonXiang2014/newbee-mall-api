@@ -1,0 +1,64 @@
+services:
+  # 1. MySQL数据库服务
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=qwer1234 # 【替换1】与后端配置一致
+      - MYSQL_DATABASE=newbee_mall_db_v2    # 【替换2】与本地一致
+      - MYSQL_CHARSET=utf8mb4
+      - MYSQL_COLLATION=utf8mb4_general_ci
+      - TZ=Asia/Shanghai
+    volumes:
+      # 数据持久化挂载
+      - ./mysql:/var/lib/mysql
+      # 自动导入SQL脚本
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+    networks:
+      - project-network
+    command: --max_allowed_packet=128M --lower_case_table_names=1
+
+  # 2. SpringBoot后端服务
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: project-backend:1.0.0
+    container_name: project-backend
+    ports:
+      - "28019:28019"
+    depends_on:
+      - mysql # 依赖MySQL，先启动MySQL再启动后端
+    volumes:
+      # 日志持久化挂载
+      - ./backend/logs:/app/logs
+    restart: always
+    networks:
+      - project-network
+    environment:
+      - TZ=Asia/Shanghai
+
+  # 3. Vue前端服务
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: project-frontend:1.0.0
+    container_name: project-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend # 依赖后端，先启动后端再启动前端
+    restart: always
+    networks:
+      - project-network
+    environment:
+      - TZ=Asia/Shanghai
+
+# 自定义网络，容器间互通
+networks:
+  project-network:
+    driver: bridge
