@@ -22,6 +22,14 @@ public class SpringDocConfig {
     private static final String headerName = "token";
 
     @Bean
+    public GroupedOpenApi defaultGroup() {
+        return GroupedOpenApi.builder()
+                .group("default")
+                .packagesToScan("ltd.newbee.mall") // 扫描所有包，也可以留空
+                .build();
+    }
+
+    @Bean
     public GroupedOpenApi adminGroup() {
         return GroupedOpenApi.builder()
                 .group("adminGroup")
@@ -69,8 +77,8 @@ public class SpringDocConfig {
         contact.setUrl("https://juejin.cn/user/3808363978174302");
         return new Info()
                 .title("新蜂商城接口文档")
-                .description("swagger接口文档")
-                .version("3.0")
+                .description("swagger接口文档2")
+                .version("3.1")
                 .contact(contact);
     }
 }

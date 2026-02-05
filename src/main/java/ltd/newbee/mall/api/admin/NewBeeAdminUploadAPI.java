@@ -50,7 +50,12 @@ public class NewBeeAdminUploadAPI {
     @RequestMapping(value = "/upload/file", method = RequestMethod.POST)
     @Operation(summary = "单图上传", description = "file Name \"file\"")
     public Result upload(HttpServletRequest httpServletRequest, @RequestParam("file") MultipartFile file, @TokenToAdminUser @Parameter(hidden = true) AdminUserToken adminUser) throws URISyntaxException {
-        logger.info("adminUser:{}", adminUser.toString());
+        logger.info("adminUser2:{}", adminUser);
+        logger.info("上传文件信息：文件名={}, 文件大小={}字节, 是否为空={}, 文件类型={}",
+                file.getOriginalFilename(), // 原始文件名（如test.jpg，核心）
+                file.getSize(),             // 文件大小（字节，判断是否超限）
+                file.isEmpty(),             // 是否为空文件（核心，排查空文件上传）
+                file.getContentType());       // 文件类型（如image/jpeg，判断是否为允许的类型）
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         //生成文件名称通用方法
