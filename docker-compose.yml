@@ -1,7 +1,7 @@
 services:
   # 1. MySQL数据库服务
   mysql:
-    image: mysql:5.7
+    image: mysql:8.0
     container_name: mysql
     ports:
       - "3306:3306"
@@ -44,8 +44,8 @@ services:
   # 3. Vue前端服务
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile
+      context: .  # 构建上下文改为项目根目录/opt/project（能访问code/、frontend/）
+      dockerfile: frontend/Dockerfile  # 期望在「构建上下文/frontend/」目录下找到Dockerfile
     image: project-frontend:1.0.0
     container_name: project-frontend
     ports:

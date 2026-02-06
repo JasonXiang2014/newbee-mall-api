@@ -3,7 +3,9 @@ FROM openjdk:17-jdk-alpine
 # 配置时区
 ENV TZ=Asia/Shanghai
 # 一次性安装依赖+配置时区，无冗余，构建层干净
-RUN apk add --no-cache tzdata libc6-compat && \
+# 新增：替换Alpine国内源（关键！加快apk下载速度）
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
+    apk add --no-cache tzdata libc6-compat && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone
 # 创建/app目录
