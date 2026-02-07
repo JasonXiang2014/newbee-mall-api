@@ -14,5 +14,5 @@ RUN mkdir -p /app
 COPY newbee-mall-api-3.0.0-SNAPSHOT.jar /app/app.jar
 # 暴露端口
 EXPOSE 28019
-# 启动JAR包（2核2G配置不变）
-CMD ["java", "-Xms1024m", "-Xmx1024m", "-jar", "/app/app.jar"]
+# 保留原有JVM内存配置，新增--spring.profiles.active=prod激活生产配置
+CMD ["java", "-Xms1024m", "-Xmx1024m", "-jar", "/app/app.jar", "--spring.profiles.active=prod"]
